@@ -10,7 +10,7 @@ services:
         - postgres
         env_file: ./include/netbox.env
         volumes:
-        - ./netbox-nginx-config:/etc/netbox-nginx/
+        - ./config:/etc/netbox-nginx/
         - ./netbox-static-files:/opt/netbox/netbox/static
     nginx:
         image: nginx:1.11-alpine
@@ -21,7 +21,7 @@ services:
         - "80:80"
         volumes:
         - ./netbox-static-files:/opt/netbox/netbox/static
-        - ./netbox-nginx-config:/etc/netbox-nginx/
+        - ./config:/etc/netbox-nginx/
     postgres:
         image: postgres:9.6-alpine
         env_file: ./include/postgres.env
