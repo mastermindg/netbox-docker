@@ -1,0 +1,10 @@
+{
+  "name": "example01",
+  "device_type": 14,
+  "device_role": 6,
+  "site": 1,
+  "rack": 3,
+  "position": 34,
+  "face": 0,
+  "status": 1
+}
