@@ -4,30 +4,26 @@ services:
         build:
           context: .
           args:
-            - BRANCH=${BRANCH-master}
-        image: ninech/netbox:${BRANCH-latest}
+            - BRANCH=${BRANCH-v2.2-beta1}
+        image: ninech/netbox:beta
         depends_on:
         - postgres
-        env_file: netbox.env
+        env_file: ./include/netbox.env
         volumes:
-        - netbox-nginx-config:/etc/netbox-nginx/
-        - netbox-static-files:/opt/netbox/netbox/static
+        - ./netbox-nginx-config:/etc/netbox-nginx/
+        - ./netbox-static-files:/opt/netbox/netbox/static
     nginx:
         image: nginx:1.11-alpine
         command: nginx -g 'daemon off;' -c /etc/netbox-nginx/nginx.conf
         depends_on:
         - netbox
         ports:
-        - 80
+        - "80:80"
         volumes:
-        - netbox-static-files:/opt/netbox/netbox/static
-        - netbox-nginx-config:/etc/netbox-nginx/
+        - ./netbox-static-files:/opt/netbox/netbox/static
+        - ./netbox-nginx-config:/etc/netbox-nginx/
     postgres:
         image: postgres:9.6-alpine
-        env_file: postgres.env
-
-volumes:
-    netbox-static-files:
-        driver: local
-    netbox-nginx-config:
-        driver: local
+        env_file: ./include/postgres.env
+        volumes:
+        - ./pgdata:/var/lib/postgresql/data
