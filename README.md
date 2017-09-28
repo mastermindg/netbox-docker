@@ -2,9 +2,9 @@
 
 Run [NetBox](https://github.com/digitalocean/netbox) in Docker
 
-This image includes Napalm and some API documentation/scripts for implementing and automating an infrastructure.
+This image runs 2.2beta at this time. It also includes Napalm. The repo includes some API documentation/scripts for implementing and automating an infrastructure.
 
-All of the volumes are stored locally for testing and to easily port the database at some future time.
+All of the data is stored locally for testing and to easily port the database at some future time.
 
 ## Quickstart
 
