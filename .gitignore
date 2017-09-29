@@ -1,3 +1,4 @@
 data.csv
 pgdata
 netbox-static-files
+include/napalm.env

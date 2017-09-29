@@ -8,7 +8,9 @@ services:
         image: ninech/netbox:beta
         depends_on:
         - postgres
-        env_file: ./include/netbox.env
+        env_file: 
+          - ./include/netbox.env
+          - ./include/napalm.env
         volumes:
         - ./config:/etc/netbox-nginx/
         - ./netbox-static-files:/opt/netbox/netbox/static
