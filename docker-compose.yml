@@ -4,7 +4,7 @@ services:
         build:
           context: .
           args:
-            - BRANCH=${BRANCH-v2.2-beta1}
+            - BRANCH=${BRANCH-v2.2-beta2}
         image: ninech/netbox:beta
         depends_on:
         - postgres
