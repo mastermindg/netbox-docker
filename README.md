@@ -28,3 +28,10 @@ Default credentials:
 ## Configuration
 
 You can configure the app using environment variables. These are defined in `netbox.env`.
+
+## API
+
+I created a Ruby class to interact with the Netbox API. If you want to use it get RVM and Bundler and do:
+
+```bundle install
+```

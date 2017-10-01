@@ -1,0 +1,21 @@
+source 'http://rubygems.org'
+ruby '2.3.1'
+
+gem 'thor'
+gem 'paint'
+gem 'shotgun'
+gem 'aws-sdk'
+gem 'highline'
+gem 'net-ping'
+gem 'net-ssh'
+
+group :sinatra do
+  gem 'sinatra'
+end
+
+group :development do
+  gem "capistrano"
+  gem "capistrano-ext"
+  gem "ejs"
+  gem 'nokogiri'
+end
