@@ -229,6 +229,19 @@ class NetboxAPI < Thor
 		post(path, post_body)
 	end
 
+	# Get an IP address
+        #
+        #
+        # Returns: String
+        desc "get_ip_address hostname", "Get the IP of a hostname"
+        def get_ip_address(hostname)
+    	  begin
+            IPSocket.getaddress(hostname)
+  	  rescue SocketError
+    	    false # Can return anything you want here
+          end
+  	end	
+
 	## DNS methods
 	#
 	# Each method returns an array of hosts, ips, service names, and ips
@@ -360,3 +373,4 @@ if ENV['token'].nil?
 	exit 1
 end
 NetboxAPI.start(ARGV)
+
