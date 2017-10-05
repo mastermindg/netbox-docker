@@ -5,3 +5,6 @@ include/napalm.env
 
 # Pesky OSX files
 .DS_Store
+
+# Ignore any generated SVGS
+*.svg
