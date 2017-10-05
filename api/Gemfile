@@ -8,6 +8,7 @@ gem 'aws-sdk'
 gem 'highline'
 gem 'net-ping'
 gem 'net-ssh'
+gem 'rmagick'
 
 group :sinatra do
   gem 'sinatra'
