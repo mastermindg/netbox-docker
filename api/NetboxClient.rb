@@ -12,7 +12,7 @@ require 'thor'
 # 
 # Example:
 # 
-# ruby API.rb dns_combine
+# ruby NetboxClient.rb dns_combine
 #
 
 ## Class to call the Netbox API and get various results
@@ -22,7 +22,7 @@ require 'thor'
 # export netbox_url=http://...
 # Takes an optional "options" hash which is passed to the API request
 # The default options hash returns all results without filtering
-class NetboxAPI < Thor
+class NetboxClient < Thor
 	@@token = ENV['token']
 	if ENV['netbox_url'].nil? 
 		@@base_url = 'localhost'
@@ -60,6 +60,10 @@ class NetboxAPI < Thor
 	desc "post path post_body", "Send a POST Request"
 	method_option :postspeak, :desc => "Print the output here"
 	def post(path, post_body, base_url = nil)
+		if @@token.nil?
+			puts "Token is required"
+			exit
+		end
 		speak = options[:postspeak]
 		base_url = @@base_url if base_url.nil?
 		url = "http://#{base_url}/api/#{path}/"
@@ -83,6 +87,10 @@ class NetboxAPI < Thor
 	desc "patch ...path", "Send a PATCH Request"
 	method_option :patchspeak, :desc => "Print the output here"
 	def patch(path, id, post_body)
+		if @@token.nil?
+			puts "Token is required"
+			exit
+		end
 		speak = options[:patchspeak]
 		url = "http://#{@@base_url}/api/#{path}/#{id}/"
 		uri = URI.parse(url)
@@ -365,12 +373,31 @@ class NetboxAPI < Thor
 		end
 		true
 	end
+
+	##################### VISUALIZATIONS ####################
+	
+	# SVG Build
+	# 
+	# Returns: String
+	no_tasks do
+		def svgbuild(array)
+			puts "<svg></svg>"
+		end
+	end
+
+	# Visualize Racks
+	# 
+	# Extracts Racks and Devices, Transforms the Array
+	# calls svgbuild to return the SVG string
+	# 
+	# Returns: Response, Writes to SVG File
+	desc "racks", "Visualize Racks"
+	def racks
+		racks = get('dcim/racks')
+		racks.each do |rack|
+			puts rack['id']
+		end
+	end
 end
 
-if ENV['token'].nil?
-	puts "Token must be set"
-	puts "export token=......"
-	exit 1
-end
-NetboxAPI.start(ARGV)
-
+NetboxClient.start(ARGV)

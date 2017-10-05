@@ -1,0 +1,30 @@
+<svg width="580" height="400" xmlns="http://www.w3.org/2000/svg">
+ <g>
+  <title>background</title>
+  <rect fill="#fff" id="canvas_background" height="402" width="582" y="-1" x="-1"/>
+  <g display="none" overflow="visible" y="0" x="0" height="100%" width="100%" id="canvasGrid">
+   <rect fill="url(#gridpattern)" stroke-width="0" y="0" x="0" height="100%" width="100%"/>
+  </g>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <rect stroke="#000" id="svg_1" height="299.999987" width="175" y="37.500013" x="63.5" stroke-width="1.5" fill="#fff"/>
+  <rect id="svg_2" height="69" width="169" y="117.5" x="66.5" stroke-width="1.5" stroke="#000" fill="#fff"/>
+  <rect id="svg_4" height="69" width="169" y="190.5" x="66.5" stroke-width="1.5" stroke="#000" fill="#fff"/>
+  <rect id="svg_5" height="69" width="169" y="263.5" x="66.5" stroke-width="1.5" stroke="#000" fill="#fff"/>
+  <rect id="svg_6" height="69" width="169" y="43.5" x="66.5" stroke-width="1.5" stroke="#000" fill="#fff"/>
+  <text xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="24" id="svg_3" y="82.5" x="111.5" stroke-width="0" stroke="#000" fill="#000000">device1</text>
+  <text xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="24" id="svg_8" y="303.5" x="111.5" stroke-width="0" stroke="#000" fill="#000000">device4</text>
+  <text xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="24" id="svg_9" y="230.5" x="113.5" stroke-width="0" stroke="#000" fill="#000000">device3</text>
+  <text xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="24" id="svg_10" y="162.5" x="112.5" stroke-width="0" stroke="#000" fill="#000000">device2</text>
+  <rect stroke="#000" id="svg_11" height="299.999987" width="175" y="36.500013" x="266.5" stroke-width="1.5" fill="#fff"/>
+  <rect id="svg_12" height="69" width="169" y="116.5" x="269.5" stroke-width="1.5" stroke="#000" fill="#fff"/>
+  <rect id="svg_13" height="69" width="169" y="189.5" x="269.5" stroke-width="1.5" stroke="#000" fill="#fff"/>
+  <rect id="svg_14" height="69" width="169" y="262.5" x="269.5" stroke-width="1.5" stroke="#000" fill="#fff"/>
+  <rect id="svg_15" height="69" width="169" y="42.5" x="269.5" stroke-width="1.5" stroke="#000" fill="#fff"/>
+  <text style="cursor: move;" xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="24" id="svg_16" y="81.5" x="314.5" stroke-width="0" stroke="#000" fill="#000000">device5</text>
+  <text style="cursor: move;" xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="24" id="svg_17" y="302.5" x="314.5" stroke-width="0" stroke="#000" fill="#000000">device8</text>
+  <text style="cursor: move;" xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="24" id="svg_18" y="229.5" x="316.5" stroke-width="0" stroke="#000" fill="#000000">device7</text>
+  <text style="cursor: move;" xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="24" id="svg_19" y="161.5" x="315.5" stroke-width="0" stroke="#000" fill="#000000">device6</text>
+ </g>
+</svg>
