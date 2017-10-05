@@ -4,7 +4,8 @@
 
 A Ruby script is included that accesses the API to get/manipulate objects. There are also visualization functions that save SVG output for a variety of objects. To get started make sure you've got Ruby and Bundler and then:
 
-```bundle install
+```
+bundle install
 ```
 
 ## Curl Examples
@@ -13,17 +14,20 @@ A Ruby script is included that accesses the API to get/manipulate objects. There
 
 A Token is required for non-read requests. The token is set via the Admin UI.
 
-```curl -H "Authorization: Token $token" -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d @example_device.json 'http://localhost/api/dcim/devices/'
+```
+curl -H "Authorization: Token $token" -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d @example_device.json 'http://localhost/api/dcim/devices/'
 ```
 
 ### Search Device by Name
 
-```curl 'http://localhost/api/dcim/devices/?name=sw-01-bos'
+```
+curl 'http://localhost/api/dcim/devices/?name=sw-01-bos'
 ```
 
 ### Search Dvices by Rack
 
-```curl 'http://localhost/api/dcim/devices/?rack_id=1'
+```
+curl 'http://localhost/api/dcim/devices/?rack_id=1'
 ```
 
 ### Get all Devices that are Networked (minus storage)
