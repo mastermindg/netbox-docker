@@ -28,16 +28,19 @@ A Token is required for non-read requests. The token is set via the Admin UI.
 
 ### Get all Devices that are Networked (minus storage)
 
-```curl 'http://localhost/api/dcim/devices/?is_network_device=true'
+```
+curl 'http://localhost/api/dcim/devices/?is_network_device=true'
 ```
 
 ### Get all VMs
 
-```curl 'http://localhost/api/virtualization/virtual-machines/'
+```
+curl 'http://localhost/api/virtualization/virtual-machines/'
 ```
 
 ### Get the first available IP
 
-```curl 'http://localhost/api/ipam/prefixes/1/available-ips/?limit=1'
+```
+curl 'http://localhost/api/ipam/prefixes/1/available-ips/?limit=1'
 ```
 
