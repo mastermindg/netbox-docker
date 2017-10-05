@@ -33,5 +33,6 @@ You can configure the app using environment variables. These are defined in `net
 
 I created a Ruby class to interact with the Netbox API. If you want to use it get RVM and Bundler and do:
 
-```bundle install
+```
+bundle install
 ```
