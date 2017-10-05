@@ -422,7 +422,15 @@ class NetboxClient < Thor
 			end
 		end
 
-		def svgbuild(array)
+
+		# Builds an SVG String from an Array
+		# 
+		# For now this is only used to build Racks since it's very specific
+		# 
+		# TODO: Add a config file to store the Visualization preferences
+		# 
+		# Returns: String
+		def svgbuild_rack(array)
 			u_height = 15
 			rack_usize = array[0]['u_height']
 			rack_height = u_height * rack_usize
@@ -468,23 +476,10 @@ class NetboxClient < Thor
 				# Draw the racks next to each other
 				x += rack_width + rack_space
 			end
-
-			# array.each do |element|
-			# 	id = element['id']
-			# 	# Draw large rectangle
-			# 	svgarray.push("<rect id='#{id}' height='300' width='175' y='50' x='50' stroke='#000' stroke-width='1' fill='#fff'/>")
-			# 	# Draw rectangles for devices
-			# 	svgarray.push("<rect id='#{id}' height='69' width='169' y='117.5' x='66.5' stroke-width='1.5' stroke='#000' fill='#fff'/>")
-			# end
-			# Add text
-			# array.each do |element|
-			# 	 id = element['id']
-			# 	 svgarray.push("<text id='#{id}' xml:space='preserve' text-anchor='start' font-family='Helvetica, Arial, sans-serif' font-size='24' y='82.5' x='111.5' stroke-width='0' stroke='#000' fill='#000000'>device#{id}</text>")
-			# end			
+		
 			svgarray.push("<text id='1' xml:space='preserve' text-anchor='start' font-family='Helvetica, Arial, sans-serif' font-size='10' y='60' x='7.5' stroke-width='0' stroke='#000' fill='#000000'>42</text>")
 			svgarray.push("</svg>")
-			svgstring = svgarray.join("\n")
-			File.open('racks.svg', 'w') { |f| f << svgstring }
+			svgarray.join("\n")
 		end
 	end
 
@@ -499,7 +494,8 @@ class NetboxClient < Thor
 		path = 'dcim/racks'
 		site_options = {'site_id' => site}
 		racks = get(path, site_options)
-		svgbuild(racks)
+		svgstring = svgbuild_rack(racks)
+		File.open('racks.svg', 'w') { |f| f << svgstring }
 	end
 end
 
