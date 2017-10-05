@@ -446,8 +446,16 @@ class NetboxClient < Thor
 			# Start coordinates for drawing
 			x = rack_space
 			y = head_space
+
+			rack_text_array = []
 			# Draw the racks
 			array.each do |rack|
+				# Generate the Numbers on the Racks
+				vertical_text = head_space + 10
+				rack_usize.downto(1) { |i|
+					rack_text_array.push("<text id='200#{rack['id']}#{i}' xml:space='preserve' text-anchor='start' font-family='Helvetica, Arial, sans-serif' font-size='10' y='#{vertical_text}' x='#{x - 13}' stroke-width='0' stroke='#000' fill='#000000'>#{i}</text>")
+					vertical_text += u_height
+				}
 				svgarray.push("<!-- Rack Name: #{rack['name']} --\>")
 				svgarray.push("<rect id='#{rack['id']}' height='#{rack_height}' width='#{rack_width}' y='#{y}' x='#{x}' stroke='#000' stroke-width='1' fill='#fff'/>")
 				text_location = x + rack_width * 0.3
@@ -470,14 +478,19 @@ class NetboxClient < Thor
 						end
 						svgarray.push("<rect id='1#{device['id']}' height='#{device_height}' width='#{rack_width}' y='#{device_location}' x='#{x}' stroke='#000' stroke-width='1' fill='#96A4A8'/>")
 						device_text_y = device_height / 2 + device_location + 5
-						svgarray.push("<text id='1#{device['id']}' xml:space='preserve' text-anchor='start' font-family='Helvetica, Arial, sans-serif' font-size='14' y='#{device_text_y}' x='#{text_location}' stroke-width='0' stroke='#000' fill='#000000'>#{device['name']}</text>")
+						if device['name'].length > 20
+							font_size = 10
+						else
+							font_size = 14
+						end
+						svgarray.push("<text id='1#{device['id']}' xml:space='preserve' text-anchor='start' font-family='Helvetica, Arial, sans-serif' font-size='#{font_size}' y='#{device_text_y}' x='#{text_location}' stroke-width='0' stroke='#000' fill='#000000'>#{device['name']}</text>")
 					end
 				end
 				# Draw the racks next to each other
 				x += rack_width + rack_space
 			end
 		
-			svgarray.push("<text id='1' xml:space='preserve' text-anchor='start' font-family='Helvetica, Arial, sans-serif' font-size='10' y='60' x='7.5' stroke-width='0' stroke='#000' fill='#000000'>42</text>")
+			svgarray.push(*rack_text_array)
 			svgarray.push("</svg>")
 			svgarray.join("\n")
 		end
@@ -492,7 +505,7 @@ class NetboxClient < Thor
 	desc "racks site", "Visualize Racks"
 	def racks(site)
 		path = 'dcim/racks'
-		site_options = {'site_id' => site}
+		site_options = {'site_id' => site, 'role' => 'used'}
 		racks = get(path, site_options)
 		svgstring = svgbuild_rack(racks)
 		File.open('racks.svg', 'w') { |f| f << svgstring }
