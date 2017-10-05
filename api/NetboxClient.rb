@@ -31,6 +31,7 @@ class NetboxClient < Thor
 	end
 	@@http_options = {'limit' => 0, 'offset' => 0}
 
+
 	# Send a GET request
 	# Return: Array
 	desc "get path ...options, base_url", "Send a GET Request"
@@ -49,7 +50,7 @@ class NetboxClient < Thor
 		results = JSON.parse(response.body)['results']
 		if response.code == '200'
 			puts results if speak
-			results
+			misarray(results)
 		else
 		  puts "Invalid response #{response.code}"
 		end
@@ -238,19 +239,44 @@ class NetboxClient < Thor
 	end
 
 	# Get an IP address
-        #
-        #
-        # Returns: String
-        desc "get_ip_address hostname", "Get the IP of a hostname"
-        def get_ip_address(hostname)
-    	  begin
-            IPSocket.getaddress(hostname)
-  	  rescue SocketError
-    	    false # Can return anything you want here
-          end
-  	end	
+  #
+  #
+  # Returns: String
+  desc "get_ip_address hostname", "Get the IP of a hostname"
+	def get_ip_address(hostname)
+		begin
+  		IPSocket.getaddress(hostname)
+  	rescue SocketError
+			false # Can return anything you want here
+		end
+	end	
 
-	## DNS methods
+	# Get a list of devices on a Rack
+	# 
+	# Returns: Array
+	desc "get_devices_by_rack rack_id", "Get a list of devices on a Rack"
+	def get_devices_by_rack(rack_id)
+		path = 'dcim/devices'
+		rack_options = { 'rack_id': rack_id }
+		get(path, rack_options)
+	end
+
+	# Get the size of a device by ID
+	# 
+	# Returns: Integer
+	desc "get_size_by_device_name device_name", "Get the size of a device by Name"
+	def get_size_by_device_name(device_name)
+		path = 'dcim/devices'
+		device_name = { "name": device_name }
+		device = get(path, device_name)
+		device_type_id = device['device_type']['id']
+		path = 'dcim/device-types'
+		device_type_options = { "id__in": device_type_id }
+		device_type = get(path, device_type_options)
+		device_type['u_height']
+	end
+
+	################################# DNS ####################################
 	#
 	# Each method returns an array of hosts, ips, service names, and ips
 
@@ -268,8 +294,8 @@ class NetboxClient < Thor
 		speak = options[:dnsvmsspeak]
 		array = Array.new
 		path = 'virtualization/virtual-machines'
-		options = {'status' => 1, 'limit' => limit, 'offset' => 0}
-		vms = get(path, options)
+		http_options = {'status' => 1, 'limit' => limit, 'offset' => 0}
+		vms = get(path, http_options)
 		vms.each do |vm|
 			hash = Hash.new
 			vm_id = vm['id']
@@ -283,8 +309,8 @@ class NetboxClient < Thor
 			end
 			hash['type'] = 'A'
 			# Get the services associated with this VM
-			options = {'virtual_machine_id' => vm_id}
-			services = get("ipam/services", options)
+			vm_options = {'virtual_machine_id' => vm_id}
+			services = get("ipam/services", vm_options)
 			unless services.nil?
 				services.each do |service|
 					if service['ipaddresses'].empty?
@@ -317,8 +343,8 @@ class NetboxClient < Thor
 	def dns_physical(limit = 1)
 		array = Array.new
 		path = 'dcim/devices'
-		options = {'status' => 1, 'limit' => limit, 'offset' => 0}
-		devices = get(path, options)
+		device_options = {'status' => 1, 'limit' => limit, 'offset' => 0}
+		devices = get(path, device_options)
 		devices.each do |device|
 			unless device['primary_ip'].nil?
 				hash = Hash.new
@@ -378,10 +404,87 @@ class NetboxClient < Thor
 	
 	# SVG Build
 	# 
+	# Assumes all Racks are the same size
+	# TODO: Don't assume
+	# 
 	# Returns: String
 	no_tasks do
+		# Misarray
+		# 
+		# If an array of hashes has only a single entry we should return only the hash
+		# 
+		# Returns: Array or Hash
+		def misarray(array)
+			if array.count == 1
+				array[0]
+			else
+				array
+			end
+		end
+
 		def svgbuild(array)
-			puts "<svg></svg>"
+			u_height = 15
+			rack_usize = array[0]['u_height']
+			rack_height = u_height * rack_usize
+			rack_width = 175
+			head_space = 50  # The space between the Racks and the top of the canvas
+			rack_space = 25  # The space between Racks
+			canvas_width = rack_width * array.count + rack_space * array.count + rack_space * 2
+			canvas_height = rack_height + 50
+			
+			# Canvas
+			svgarray = ["<svg width='#{canvas_width}' height='#{canvas_height}' style='background: white' xmlns='http://www.w3.org/2000/svg'>"]
+			
+			# Start coordinates for drawing
+			x = rack_space
+			y = head_space
+			# Draw the racks
+			array.each do |rack|
+				svgarray.push("<!-- Rack Name: #{rack['name']} --\>")
+				svgarray.push("<rect id='#{rack['id']}' height='#{rack_height}' width='#{rack_width}' y='#{y}' x='#{x}' stroke='#000' stroke-width='1' fill='#fff'/>")
+				text_location = x + rack_width * 0.3
+				svgarray.push("<text id='#{rack['id']}' xml:space='preserve' text-anchor='start' font-family='Helvetica, Arial, sans-serif' font-size='20' y='#{y - 5}' x='#{text_location}' stroke-width='0' stroke='#000' fill='#000000'>#{rack['name']}</text>")
+				devices_on_this_rack = get_devices_by_rack(rack['id'])
+				devices_on_this_rack.each do |device|
+					# Some devices don't have a position of their own (i.e. Blade components)
+					unless device['position'].nil?
+						# Rack numbers are bottom to top, coordinates are top to bottom
+						usdown = rack_usize - device['position']
+						svgarray.push("<!-- Device Name: #{device['name']} Position: #{device['position']} --\>")
+						device_u = get_size_by_device_name(device['name'])
+						device_height = u_height * device_u
+						# Draw from botton up
+						if device_u > 1
+							pushedup = device_u * u_height - u_height
+							device_location = usdown * u_height - pushedup + y
+						else
+							device_location = usdown * u_height + y
+						end
+						svgarray.push("<rect id='1#{device['id']}' height='#{device_height}' width='#{rack_width}' y='#{device_location}' x='#{x}' stroke='#000' stroke-width='1' fill='#96A4A8'/>")
+						device_text_y = device_height / 2 + device_location + 5
+						svgarray.push("<text id='1#{device['id']}' xml:space='preserve' text-anchor='start' font-family='Helvetica, Arial, sans-serif' font-size='14' y='#{device_text_y}' x='#{text_location}' stroke-width='0' stroke='#000' fill='#000000'>#{device['name']}</text>")
+					end
+				end
+				# Draw the racks next to each other
+				x += rack_width + rack_space
+			end
+
+			# array.each do |element|
+			# 	id = element['id']
+			# 	# Draw large rectangle
+			# 	svgarray.push("<rect id='#{id}' height='300' width='175' y='50' x='50' stroke='#000' stroke-width='1' fill='#fff'/>")
+			# 	# Draw rectangles for devices
+			# 	svgarray.push("<rect id='#{id}' height='69' width='169' y='117.5' x='66.5' stroke-width='1.5' stroke='#000' fill='#fff'/>")
+			# end
+			# Add text
+			# array.each do |element|
+			# 	 id = element['id']
+			# 	 svgarray.push("<text id='#{id}' xml:space='preserve' text-anchor='start' font-family='Helvetica, Arial, sans-serif' font-size='24' y='82.5' x='111.5' stroke-width='0' stroke='#000' fill='#000000'>device#{id}</text>")
+			# end			
+			svgarray.push("<text id='1' xml:space='preserve' text-anchor='start' font-family='Helvetica, Arial, sans-serif' font-size='10' y='60' x='7.5' stroke-width='0' stroke='#000' fill='#000000'>42</text>")
+			svgarray.push("</svg>")
+			svgstring = svgarray.join("\n")
+			File.open('racks.svg', 'w') { |f| f << svgstring }
 		end
 	end
 
@@ -391,12 +494,12 @@ class NetboxClient < Thor
 	# calls svgbuild to return the SVG string
 	# 
 	# Returns: Response, Writes to SVG File
-	desc "racks", "Visualize Racks"
-	def racks
-		racks = get('dcim/racks')
-		racks.each do |rack|
-			puts rack['id']
-		end
+	desc "racks site", "Visualize Racks"
+	def racks(site)
+		path = 'dcim/racks'
+		site_options = {'site_id' => site}
+		racks = get(path, site_options)
+		svgbuild(racks)
 	end
 end
 
