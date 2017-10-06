@@ -25,6 +25,7 @@ END
 
 # copy static files
 ./manage.py collectstatic --no-input > /dev/null 2>&1
+echo "Created static files."
 
 echo "✅ Initialisation is done. Launching CMD:"
 echo "exec ${@}"
