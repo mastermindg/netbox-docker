@@ -1,5 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -e
+
+# wait for Postgres to be running
+/opt/netbox/wait_for_postgres.sh postgres
 
 # run db migrations (retry on error)
 while ! ./manage.py migrate 2>&1; do
@@ -21,7 +24,7 @@ if not User.objects.filter(username='${SUPERUSER_NAME}'):
 END
 
 # copy static files
-./manage.py collectstatic --no-input
+./manage.py collectstatic --no-input > /dev/null 2>&1
 
 echo "✅ Initialisation is done. Launching CMD:"
 echo "exec ${@}"

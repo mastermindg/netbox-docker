@@ -12,8 +12,7 @@ services:
           - ./include/netbox.env
           - ./include/napalm.env
         volumes:
-        - ./include/nginx.conf:/etc/netbox-nginx/nginx.conf
-        - ./netbox-static-files:/opt/netbox/netbox/static
+        - netbox-static-files:/opt/netbox/netbox/static
     nginx:
         image: nginx:1.11-alpine
         command: nginx -g 'daemon off;' -c /etc/netbox-nginx/nginx.conf
@@ -22,13 +21,18 @@ services:
         ports:
         - "80:80"
         volumes:
-        - ./netbox-static-files:/opt/netbox/netbox/static
+        - netbox-static-files:/opt/netbox/netbox/static
         - ./include/nginx.conf:/etc/netbox-nginx/nginx.conf
     postgres:
         image: postgres:9.6-alpine
         env_file: ./include/postgres.env
         volumes:
         - ./pgdata:/var/lib/postgresql/data
+        healthcheck:
+          test: ["CMD-SHELL", "pg_isready"]
+          interval: 30s
+          timeout: 30s
+          retries: 3
     client:
         build:
             context: ./client
@@ -37,3 +41,7 @@ services:
         - netbox
         env_file:
         - ./client/client.env
+
+volumes:
+    netbox-static-files:
+        driver: local

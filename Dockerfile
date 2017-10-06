@@ -13,6 +13,7 @@ RUN apk add --no-cache \
       openldap-dev \
       openssl-dev \
       postgresql-dev \
+      postgresql-client \
       wget
 
 RUN pip install gunicorn json-logging-py
@@ -31,6 +32,7 @@ RUN pip install napalm
 RUN ln -s configuration.docker.py /opt/netbox/netbox/netbox/configuration.py
 COPY include/gunicorn_logging.conf /opt/netbox/
 COPY include/gunicorn_config.py /opt/netbox/
+COPY include/wait_for_postgres.sh /opt/netbox/
 
 WORKDIR /opt/netbox/netbox
 
