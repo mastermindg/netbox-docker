@@ -14,9 +14,11 @@ RUN apk add --no-cache \
       openssl-dev \
       postgresql-dev \
       postgresql-client \
+      python-dev \
+      openldap-dev \
       wget
 
-RUN pip install gunicorn json-logging-py
+RUN pip install gunicorn
 
 WORKDIR /opt
 
@@ -28,11 +30,14 @@ RUN wget -q -O - "${URL}" | tar xz \
 WORKDIR /opt/netbox
 RUN pip install -r requirements.txt
 RUN pip install napalm
+RUN pip install json-logging-py
+RUN pip install django-auth-ldap
 
 RUN ln -s configuration.docker.py /opt/netbox/netbox/netbox/configuration.py
 COPY include/gunicorn_logging.conf /opt/netbox/
 COPY include/gunicorn_config.py /opt/netbox/
 COPY include/wait_for_postgres.sh /opt/netbox/
+COPY include/ldap_config.py /opt/netbox/netbox/netbox/
 
 WORKDIR /opt/netbox/netbox
 

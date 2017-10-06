@@ -1,10 +1,10 @@
 # netbox-docker
 
-Run [NetBox](https://github.com/digitalocean/netbox) in Docker
+Runs [NetBox](https://github.com/digitalocean/netbox) in Docker
 
 This image runs 2.2beta at this time. It also includes NAPALM. The repo includes an API client for implementing and automating an infrastructure.
 
-The database is sored locally for testing and to easily port it at some future time.
+The database is stored locally for testing and to easily port it at some future time.
 
 NAPALM credentials are stored in include/napalm.env. It's excluded from the repo so add credentials to it if you want to use NAPALM.
 
