@@ -5,7 +5,7 @@ services:
           context: .
           args:
             - BRANCH=${BRANCH-v2.2-beta2}
-        image: ninech/netbox:beta
+        image: mastermindg/netbox:beta
         depends_on:
         - postgres
         env_file: 
@@ -29,3 +29,11 @@ services:
         env_file: ./include/postgres.env
         volumes:
         - ./pgdata:/var/lib/postgresql/data
+    client:
+        build:
+            context: ./client
+        image: mastermindg/netbox_client
+        depends_on:
+        - netbox
+        env_file:
+        - ./client/client.env
