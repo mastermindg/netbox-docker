@@ -6,13 +6,24 @@ services:
           args:
             - BRANCH=${BRANCH-v2.2-beta2}
         image: mastermindg/netbox:beta
-        ports:
-        - "80:80"
         depends_on:
         - postgres
         env_file: 
           - ./include/netbox.env
           - ./include/napalm.env
+        volumes:
+        - ./include/nginx.conf:/etc/netbox-nginx/nginx.conf
+        - ./netbox-static-files:/opt/netbox/netbox/static
+    nginx:
+        image: nginx:1.11-alpine
+        command: nginx -g 'daemon off;' -c /etc/netbox-nginx/nginx.conf
+        depends_on:
+        - netbox
+        ports:
+        - "80:80"
+        volumes:
+        - ./netbox-static-files:/opt/netbox/netbox/static
+        - ./include/nginx.conf:/etc/netbox-nginx/nginx.conf
     postgres:
         image: postgres:9.6-alpine
         env_file: ./include/postgres.env
