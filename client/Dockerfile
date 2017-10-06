@@ -14,4 +14,4 @@ RUN bundle install
 
 COPY NetboxClient.rb .
 
-CMD ["/opt/NetboxClient.rb"]
+ENTRYPOINT ["/opt/NetboxClient.rb"]
