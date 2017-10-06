@@ -15,7 +15,7 @@ RUN apk add --no-cache \
       postgresql-dev \
       wget
 
-RUN pip install gunicorn
+RUN pip install gunicorn json-logging-py
 
 WORKDIR /opt
 
@@ -29,8 +29,8 @@ RUN pip install -r requirements.txt
 RUN pip install napalm
 
 RUN ln -s configuration.docker.py /opt/netbox/netbox/netbox/configuration.py
+COPY include/gunicorn_logging.conf /opt/netbox/
 COPY include/gunicorn_config.py /opt/netbox/
-COPY config/nginx.conf /etc/netbox-nginx/nginx.conf
 
 WORKDIR /opt/netbox/netbox
 
@@ -39,4 +39,4 @@ ENTRYPOINT [ "/docker-entrypoint.sh" ]
 
 VOLUME ["/etc/netbox-nginx/"]
 
-CMD ["gunicorn", "--log-level debug", "-c /opt/netbox/gunicorn_config.py", "netbox.wsgi"]
+CMD ["gunicorn", "--log-config", "/opt/netbox/gunicorn_logging.conf", "-c /opt/netbox/gunicorn_config.py", "netbox.wsgi"]

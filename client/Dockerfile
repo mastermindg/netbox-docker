@@ -3,7 +3,8 @@ FROM ruby:2.3.1-alpine
 RUN apk add --no-cache \
       bash \
       build-base \
-      imagemagick-dev
+      imagemagick-dev \
+      curl
 
 RUN mkdir /opt
 WORKDIR /opt
@@ -13,4 +14,4 @@ RUN bundle install
 
 COPY NetboxClient.rb .
 
-ENTRYPOINT ["/opt/NetboxClient.rb"]
+CMD ["/opt/NetboxClient.rb"]
