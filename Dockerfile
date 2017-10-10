@@ -28,6 +28,8 @@ RUN wget -q -O - "${URL}" | tar xz \
   && mv netbox* netbox
 
 WORKDIR /opt/netbox
+# Temp fix for Django 3.7 deps
+RUN pip install djangorestframework==3.6.4
 RUN pip install -r requirements.txt
 RUN pip install napalm
 RUN pip install json-logging-py
