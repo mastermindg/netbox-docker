@@ -13,7 +13,8 @@ To get NetBox up and running:
 ```
 $ git clone -b master https://github.com/mastermindg/netbox-docker.git
 $ cd netbox-docker
-$ touch include/napalm.env
+$ cp include/napalm.env.sample include/napalm.env
+$ cp include/ldap.env.sample include/ldap.env
 $ docker-compose build
 $ docker volume prune -f # Clean cache if it's there
 $ docker-compose up -d
