@@ -11,6 +11,7 @@ services:
         env_file: 
           - ./include/netbox.env
           - ./include/napalm.env
+          - ./include/ldap.env
         volumes:
         - netbox-static-files:/opt/netbox/netbox/static
     nginx:

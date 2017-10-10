@@ -1,12 +1,10 @@
 # netbox-docker
 
-Run [NetBox](https://github.com/digitalocean/netbox) in Docker
+Runs [NetBox](https://github.com/digitalocean/netbox) in Docker
 
 This image runs 2.2beta at this time. It also includes NAPALM. The repo includes an API client for implementing and automating an infrastructure.
 
-The database is sored locally for testing and to easily port it at some future time.
-
-NAPALM credentials are stored in include/napalm.env. It's excluded from the repo so add credentials to it if you want to use NAPALM.
+The database is stored locally for testing and to easily port it at some future time.
 
 ## Quickstart
 
@@ -43,3 +41,12 @@ To get a list of devices in JSON:
 ```
 $ docker-compose run client get dcim/devices --getspeak
 ```
+
+## LDAP Integration
+
+NetBox uses Django's built-in LDAP integration to allow LDAP users to authenticate. The configuration is defined in include/ldap_config.py. Environmental variables are used to keep secrets out of the config. These are defined in include/ldap.env. The configuration needs to be mapped to your LDAP server. For more information on setting up LDAP integration see [Netbox Docs](https://netbox.readthedocs.io/en/latest/installation/ldap/)
+
+
+## NAPALM Integration
+
+NAPALM credentials are stored in include/napalm.env. It's excluded from the repo so add credentials to it if you want to use NAPALM. A sample file is included as well. Just fill in the correct username and password to authenticate with your servers.
