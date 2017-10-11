@@ -2,6 +2,9 @@ pgdata
 include/napalm.env
 include/ldap.env
 
+# Keep secrets here
+secrets
+
 # Pesky OSX files
 .DS_Store
 
