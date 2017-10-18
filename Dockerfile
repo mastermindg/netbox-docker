@@ -35,7 +35,7 @@ RUN pip install napalm
 RUN pip install json-logging-py
 RUN pip install django-auth-ldap
 
-RUN ln -s configuration.docker.py /opt/netbox/netbox/netbox/configuration.py
+COPY include/configuration.docker.py /opt/netbox/netbox/netbox/configuration.py
 COPY include/gunicorn_logging.conf /opt/netbox/
 COPY include/gunicorn_config.py /opt/netbox/
 COPY include/wait_for_postgres.sh /opt/netbox/
